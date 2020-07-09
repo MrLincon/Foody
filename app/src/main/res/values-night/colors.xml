@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimaryDark">#212121</color>
+    <color name="colorAccent">#03DAC5</color>
+
+    <color name="colorBackground">#323232</color>
+    <color name="colorText">#ffffff</color>
+    <color name="colorIcon">#fff</color>
+    <color name="colorView">#321D1D1D</color>
+    <color name="colorTextTab">#80FFFFFF</color>
+    <color name="colorIndicatorTab">#fff</color>
+    <color name="colorSelectedTextTab">#fff</color>
+    <color name="colorActiveBottom">#fff</color>
+    <color name="colorInactiveBottom">#4DFFFFFF</color>
+</resources>
