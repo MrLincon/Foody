@@ -23,6 +23,8 @@
             app:tabIndicatorColor="@color/colorIndicatorTab"
             app:tabTextAppearance="@style/TabTextAppearance"
             app:tabRippleColor="@null"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
             app:tabSelectedTextColor="@color/colorSelectedTextTab"
             app:tabTextColor="@color/colorTextTab"></com.google.android.material.tabs.TabLayout>
 

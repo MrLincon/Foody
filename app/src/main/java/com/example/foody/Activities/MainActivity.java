@@ -2,15 +2,22 @@ package com.example.foody.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Switch;
 
 import com.example.foody.BottomNav.FragmentHome;
 import com.example.foody.BottomNav.FragmentMessage;
 import com.example.foody.BottomNav.FragmentNotification;
 import com.example.foody.BottomNav.FragmentPost;
+import com.example.foody.Models.BottomNavigationViewBehavior;
+import com.example.foody.Models.ThemeSettings;
 import com.example.foody.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -18,8 +25,20 @@ public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
 
+    ThemeSettings themeSettings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Theme Settings
+        themeSettings = new ThemeSettings(this);
+        if (themeSettings.loadNightModeState() == false) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+
+        //...............
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -61,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)
+                bottomNavigationView .getLayoutParams();
+        layoutParams.setBehavior(new BottomNavigationViewBehavior());
 
     }
 }

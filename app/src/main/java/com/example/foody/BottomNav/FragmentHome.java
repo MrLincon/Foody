@@ -11,10 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.foody.Activities.ProfileActivity;
 import com.example.foody.Activities.SettingsActivity;
+import com.example.foody.Models.BottomNavigationViewBehavior;
 import com.example.foody.Models.ViewPagerAdapter;
 import com.example.foody.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -28,7 +31,7 @@ public class FragmentHome extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private ImageView settings;
+    private ImageView settings,profile;
 //    LinearLayout filter;
 
     View view;
@@ -42,11 +45,14 @@ public class FragmentHome extends Fragment {
         toolbar = view.findViewById(R.id.toolbar);
         toolbarTitle = view.findViewById(R.id.toolbar_title);
         settings = view.findViewById(R.id.settings);
+        profile = view.findViewById(R.id.profile);
 
         tabLayout = view.findViewById(R.id.tabLayoutID);
         viewPager = view.findViewById(R.id.viewPager);
 
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
+
+
 
         //        For Action Bar
 //        setSupportActionBar(toolbar);
@@ -66,6 +72,14 @@ public class FragmentHome extends Fragment {
             public void onClick(View v) {
                 Intent settings = new Intent(getContext(), SettingsActivity.class);
                 startActivity(settings);
+            }
+        });
+
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent profile = new Intent(getContext(), ProfileActivity.class);
+                startActivity(profile);
             }
         });
 

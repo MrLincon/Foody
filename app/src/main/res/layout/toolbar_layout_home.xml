@@ -7,14 +7,23 @@
     android:elevation="0dp"
     android:minHeight="?attr/actionBarSize"
     app:layout_scrollFlags="scroll|enterAlways"
-    app:popupTheme="@style/PopupOverlay">
+    app:popupTheme="@style/PopupOverlay"
+    android:contentInsetLeft="0dp"
+    android:contentInsetStart="0dp"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    android:contentInsetRight="0dp"
+    android:contentInsetEnd="0dp"
+    app:contentInsetRight="0dp"
+    app:contentInsetEnd="0dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <ImageView
         android:id="@+id/settings"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:src="@drawable/person"></de.hdodenhof.circleimageview.CircleImageView>
+        android:padding="16dp"
+        android:src="@drawable/ic_filter"></ImageView>
 
     <TextView
         android:id="@+id/toolbar_title"
@@ -28,19 +37,19 @@
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"/>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginRight="16dp"
-        android:scaleX="-1"
-        android:src="@drawable/ic_filter"></ImageView>
+        android:layout_gravity="right"
+        android:src="@drawable/img_user"></de.hdodenhof.circleimageview.CircleImageView>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="16dp"
         android:src="@drawable/ic_search"></ImageView>
 
 </androidx.appcompat.widget.Toolbar>
