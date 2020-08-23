@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.foody.Tabs.FragmentFeed;
+import com.example.foody.Tabs.FragmentFeed2;
 import com.example.foody.Tabs.FragmentOffers;
 import com.example.foody.Tabs.FragmentRestaurants;
 
@@ -21,7 +22,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         final Fragment[] fragment = {null};
 
         if (position == 0) {
-            fragment[0] = new FragmentFeed();
+            fragment[0] = new FragmentFeed2();
         } else if (position == 1) {
             fragment[0] = new FragmentOffers();
         } else if (position == 2) {

@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    tools:context=".Activities.MainActivity">
+    android:background="@color/colorBackground">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <include
             android:id="@+id/toolbar"
@@ -21,65 +21,63 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:tabIndicatorColor="@color/colorIndicatorTab"
-            app:tabTextAppearance="@style/TabTextAppearance"
             app:tabRippleColor="@null"
-            android:layout_marginRight="8dp"
-            android:layout_marginLeft="8dp"
             app:tabSelectedTextColor="@color/colorSelectedTextTab"
+            app:tabTextAppearance="@style/TabTextAppearance"
             app:tabTextColor="@color/colorTextTab"></com.google.android.material.tabs.TabLayout>
 
-    </com.google.android.material.appbar.AppBarLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorBackground"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"></androidx.viewpager.widget.ViewPager>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorBackground"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"></androidx.viewpager.widget.ViewPager>
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
+    <!--<com.google.android.material.appbar.AppBarLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--</com.google.android.material.appbar.AppBarLayout>-->
 
 
+    <!--    app:tabTextAppearance="@style/TabTextAppearance"-->
 
 
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:weightSum="7">-->
 
-<!--    app:tabTextAppearance="@style/TabTextAppearance"-->
+    <!--<LinearLayout-->
+    <!--    android:layout_width="0dp"-->
+    <!--    android:layout_height="match_parent"-->
+    <!--    android:layout_weight="6">-->
 
+    <!--   -->
 
-
-
-<!--<LinearLayout-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="match_parent"-->
-<!--android:orientation="horizontal"-->
-<!--android:weightSum="7">-->
-
-<!--<LinearLayout-->
-<!--    android:layout_width="0dp"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_weight="6">-->
-
-<!--   -->
-
-<!--</LinearLayout>-->
+    <!--</LinearLayout>-->
 
 
-<!--<LinearLayout-->
-<!--    android:id="@+id/filter"-->
-<!--    android:layout_width="0dp"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_weight="1"-->
-<!--    android:gravity="center"-->
-<!--    android:background="@color/colorBackground"-->
-<!--    android:foreground="?android:attr/selectableItemBackground">-->
+    <!--<LinearLayout-->
+    <!--    android:id="@+id/filter"-->
+    <!--    android:layout_width="0dp"-->
+    <!--    android:layout_height="match_parent"-->
+    <!--    android:layout_weight="1"-->
+    <!--    android:gravity="center"-->
+    <!--    android:background="@color/colorBackground"-->
+    <!--    android:foreground="?android:attr/selectableItemBackground">-->
 
-<!--    <ImageView-->
-<!--        android:layout_width="24dp"-->
-<!--        android:layout_height="24dp"-->
-<!--        android:src="@drawable/filter"></ImageView>-->
+    <!--    <ImageView-->
+    <!--        android:layout_width="24dp"-->
+    <!--        android:layout_height="24dp"-->
+    <!--        android:src="@drawable/filter"></ImageView>-->
 
-<!--</LinearLayout>-->
+    <!--</LinearLayout>-->
 
-<!--</LinearLayout>-->
+    <!--</LinearLayout>-->

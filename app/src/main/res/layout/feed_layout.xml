@@ -7,8 +7,9 @@
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical"
-    app:cardCornerRadius="3dp"
-    app:cardElevation="5dp">
+    app:cardBackgroundColor="@color/colorBackground"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,7 +47,7 @@
                     android:fontFamily="@font/montserrat_bold"
                     android:text="Ahamed Lincon"
                     android:textColor="@color/colorText"
-                    android:textSize="16sp"></TextView>
+                    android:textSize="14sp"></TextView>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -54,7 +55,7 @@
                     android:fontFamily="@font/montserrat_bold"
                     android:text="2 hours"
                     android:textColor="@color/colorText"
-                    android:textSize="14sp"></TextView>
+                    android:textSize="12sp"></TextView>
 
             </LinearLayout>
 
@@ -80,8 +81,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@drawable/ic_heart"></ImageView>
 
                 <TextView
@@ -91,11 +92,11 @@
                     android:fontFamily="@font/montserrat_bold"
                     android:text="10"
                     android:textColor="@color/colorText"
-                    android:textSize="16sp"></TextView>
+                    android:textSize="12sp"></TextView>
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:layout_marginLeft="16dp"
                     android:src="@drawable/ic_comment"></ImageView>
 
@@ -106,7 +107,7 @@
                     android:fontFamily="@font/montserrat_bold"
                     android:text="6"
                     android:textColor="@color/colorText"
-                    android:textSize="16sp"></TextView>
+                    android:textSize="12sp"></TextView>
 
             </LinearLayout>
 
@@ -118,8 +119,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginLeft="16dp"
                     android:src="@drawable/ic_view"></ImageView>
 
@@ -130,7 +131,7 @@
                     android:fontFamily="@font/montserrat_bold"
                     android:text="35"
                     android:textColor="@color/colorText"
-                    android:textSize="16sp"></TextView>
+                    android:textSize="12sp"></TextView>
 
             </LinearLayout>
 

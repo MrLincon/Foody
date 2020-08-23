@@ -50,9 +50,6 @@ public class FragmentHome extends Fragment {
         tabLayout = view.findViewById(R.id.tabLayoutID);
         viewPager = view.findViewById(R.id.viewPager);
 
-        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
-
-
 
         //        For Action Bar
 //        setSupportActionBar(toolbar);

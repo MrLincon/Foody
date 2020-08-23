@@ -9,6 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Activities.DetailsActivity"
+            android:parentActivityName=".Activities.MainActivity"></activity>
         <activity android:name=".Authentication.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,14 +18,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Authentication.SignupActivity"></activity>
-        <activity android:name=".Authentication.PasswordRecoveryActivity"
-            android:parentActivityName=".Authentication.LoginActivity"></activity>
-        <activity android:name=".Authentication.ConfirmActivity"></activity>
-        <activity android:name=".Activities.SettingsActivity"></activity>
-        <activity android:name=".Activities.ProfileActivity"
-            android:parentActivityName=".Activities.MainActivity"></activity>
-        <activity android:name=".Activities.MainActivity"></activity>
+        <activity android:name=".Authentication.SignupActivity" />
+        <activity
+            android:name=".Authentication.PasswordRecoveryActivity"
+            android:parentActivityName=".Authentication.LoginActivity" />
+        <activity android:name=".Authentication.ConfirmActivity" />
+        <activity android:name=".Activities.SettingsActivity" />
+        <activity
+            android:name=".Activities.ProfileActivity"
+            android:parentActivityName=".Activities.MainActivity" />
+        <activity android:name=".Activities.MainActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

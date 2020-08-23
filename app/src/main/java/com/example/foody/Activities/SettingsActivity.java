@@ -106,7 +106,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     private void restartApp() {
-        Intent restartApp = new Intent(SettingsActivity.this, SettingsActivity.class);
+        Intent restartApp = new Intent(SettingsActivity.this, MainActivity.class);
         startActivity(restartApp);
         finish();
     }

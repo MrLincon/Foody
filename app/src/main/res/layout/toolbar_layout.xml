@@ -6,7 +6,6 @@
     android:background="@color/colorPrimary"
     android:elevation="0dp"
     android:minHeight="?attr/actionBarSize"
-    app:layout_scrollFlags="scroll|enterAlways"
     app:popupTheme="@style/PopupOverlay">
 
     <ImageView

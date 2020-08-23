@@ -81,9 +81,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)
-                bottomNavigationView .getLayoutParams();
-        layoutParams.setBehavior(new BottomNavigationViewBehavior());
+
+        //Hiding bottom nav
+
+//        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)
+//                bottomNavigationView .getLayoutParams();
+//        layoutParams.setBehavior(new BottomNavigationViewBehavior());
 
     }
 }
