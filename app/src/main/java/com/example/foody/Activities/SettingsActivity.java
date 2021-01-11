@@ -1,5 +1,6 @@
 package com.example.foody.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -12,26 +13,39 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.foody.Authentication.LoginActivity;
 import com.example.foody.Models.ThemeSettings;
 import com.example.foody.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private TextView toolbarTitle;
-    private ImageView close;
+    private ImageView back;
 
-    private CardView logOut, darkMode;
+    private TextView name,division;
+
+    private CardView profile, logOut, darkMode;
 
     ThemeSettings themeSettings;
     private Switch darkModeSwitch;
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+
+    private FirebaseFirestore db;
+    private DocumentReference document_reference;
+
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +65,14 @@ public class SettingsActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         toolbarTitle = findViewById(R.id.toolbar_title);
-        close = findViewById(R.id.close);
+        back = findViewById(R.id.back);
         logOut = findViewById(R.id.log_out);
         darkModeSwitch = findViewById(R.id.switch_dark_mode);
         darkMode = findViewById(R.id.dark_mode);
+
+        profile = findViewById(R.id.profile);
+        name = findViewById(R.id.tv_name);
+        division = findViewById(R.id.tv_division);
 
 //        For Action Bar
         toolbarTitle.setText("Settings");
@@ -62,6 +80,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+
+        userID = mAuth.getUid();
+
+        db = FirebaseFirestore.getInstance();
+        document_reference = db.collection("UserDetails").document(userID);
 
         darkModeSwitch.setClickable(false);
         if (themeSettings.loadNightModeState() == false) {
@@ -83,6 +106,16 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        loadUserData();
+
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(SettingsActivity.this,ProfileActivity.class);
+                startActivity(i);
+            }
+        });
+
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +126,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        close.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent close = new Intent(SettingsActivity.this, MainActivity.class);
@@ -102,6 +135,33 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void loadUserData() {
+
+        document_reference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                if (documentSnapshot.exists()) {
+
+
+                    String Name = documentSnapshot.getString("name");
+                    String Division = documentSnapshot.getString("division");
+
+                    name.setText(Name);
+                    division.setText(Division);
+
+                } else {
+                    Toast.makeText(SettingsActivity.this, "Something wrong!", Toast.LENGTH_LONG).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
 

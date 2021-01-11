@@ -3,20 +3,14 @@ package com.example.foody.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Switch;
 
 import com.example.foody.BottomNav.FragmentHome;
-import com.example.foody.BottomNav.FragmentMessage;
 import com.example.foody.BottomNav.FragmentNotification;
-import com.example.foody.BottomNav.FragmentPost;
-import com.example.foody.Models.BottomNavigationViewBehavior;
 import com.example.foody.Models.ThemeSettings;
 import com.example.foody.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -66,15 +60,18 @@ public class MainActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                 selectedFragment).commit();
                         break;
-                    case R.id.nav_message:
-                        selectedFragment = new FragmentMessage();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                selectedFragment).commit();
-                        break;
                     case R.id.nav_add:
-                        selectedFragment = new FragmentPost();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                selectedFragment).commit();
+
+                        Intent i = new Intent(MainActivity.this,PostActivity.class);
+                        startActivity(i);
+                        finish();
+//                        selectedFragment = new FragmentPost();
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                                selectedFragment).commit();
+                        break;
+                    case R.id.nav_profile:
+                        Intent profile = new Intent(MainActivity.this, ProfileActivity.class);
+                        startActivity(profile);
                         break;
                 }
                 return true;

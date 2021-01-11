@@ -11,13 +11,10 @@
 
     <ImageView
         android:id="@+id/close"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:src="@drawable/img_back"
-        android:clickable="true"
-        android:scaleX="-1"
-        android:foreground="?android:attr/selectableItemBackground"></ImageView>
+        android:src="@drawable/ic_back"></ImageView>
 
     <TextView
         android:id="@+id/toolbar_title"

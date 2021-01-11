@@ -7,13 +7,14 @@
     <color name="colorBackground">#323232</color>
     <color name="colorText">#ffffff</color>
     <color name="colorTextSecondary">#80FFFFFF</color>
+    <color name="colorSecondary">#80FFFFFF</color>
     <color name="colorIcon">#fff</color>
-    <color name="colorView">#321D1D1D</color>
+    <color name="colorView">#1AFFFFFF</color>
     <color name="colorTextTab">#80FFFFFF</color>
     <color name="colorIndicatorTab">#fff</color>
     <color name="colorSelectedTextTab">#fff</color>
     <color name="colorActiveBottom">#fff</color>
-    <color name="colorInactiveBottom">#4DFFFFFF</color>
+    <color name="colorInactiveBottom">#fff</color>
 
     <color name="colorCard">#282828</color>
 

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.foody">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,8 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.DetailsActivity"
-            android:parentActivityName=".Activities.MainActivity"></activity>
+        <activity android:name=".Activities.CommentActivity"></activity>
+        <activity
+            android:name=".Activities.EditProfileActivity"
+            android:parentActivityName=".Activities.ProfileActivity" />
+        <activity android:name=".Activities.PostActivity" />
+        <activity
+            android:name=".Activities.DetailsActivity"
+            android:parentActivityName=".Activities.MainActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name=".Authentication.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,10 +29,17 @@
         </activity>
         <activity android:name=".Authentication.SignupActivity" />
         <activity
+            android:name=".Activities.DetailsActivityOffer"
+            android:parentActivityName=".Activities.MainActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
             android:name=".Authentication.PasswordRecoveryActivity"
             android:parentActivityName=".Authentication.LoginActivity" />
         <activity android:name=".Authentication.ConfirmActivity" />
         <activity android:name=".Activities.SettingsActivity" />
+        <activity
+            android:name=".Activities.ProfileActivityView"
+            android:parentActivityName=".Activities.MainActivity" />
         <activity
             android:name=".Activities.ProfileActivity"
             android:parentActivityName=".Activities.MainActivity" />

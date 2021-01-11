@@ -31,7 +31,7 @@ public class FragmentHome extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private ImageView settings,profile;
+    private ImageView settings;
 //    LinearLayout filter;
 
     View view;
@@ -45,7 +45,6 @@ public class FragmentHome extends Fragment {
         toolbar = view.findViewById(R.id.toolbar);
         toolbarTitle = view.findViewById(R.id.toolbar_title);
         settings = view.findViewById(R.id.settings);
-        profile = view.findViewById(R.id.profile);
 
         tabLayout = view.findViewById(R.id.tabLayoutID);
         viewPager = view.findViewById(R.id.viewPager);
@@ -69,14 +68,6 @@ public class FragmentHome extends Fragment {
             public void onClick(View v) {
                 Intent settings = new Intent(getContext(), SettingsActivity.class);
                 startActivity(settings);
-            }
-        });
-
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent profile = new Intent(getContext(), ProfileActivity.class);
-                startActivity(profile);
             }
         });
 

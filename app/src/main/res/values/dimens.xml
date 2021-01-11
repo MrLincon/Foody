@@ -3,4 +3,6 @@
     <dimen name="sidePadding">10dp</dimen>
     <dimen name="topPadding">10dp</dimen>
     <dimen name="bottomPadding">10dp</dimen>
+    <dimen name="leftPadding">10dp</dimen>
+    <dimen name="rightPadding">10dp</dimen>
 </resources>
