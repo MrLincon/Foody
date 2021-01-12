@@ -40,7 +40,7 @@ public class ProfileActivityView extends AppCompatActivity {
     private ImageView close;
     private RecyclerView recyclerView;
 
-    private TextView name,email, time, day;
+    private TextView name,email, time, day, foodMenu;
 
     private String ID, userID;
     private FirebaseAuth mAuth;
@@ -50,6 +50,7 @@ public class ProfileActivityView extends AppCompatActivity {
     private MyPostAdapter adapter;
 
     public static final String EXTRA_ID_POST = "com.example.foody.EXTRA_ID";
+    public static final String EXTRA_ID_Restaurant = "com.example.foody.EXTRA_ID_Restaurant";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class ProfileActivityView extends AppCompatActivity {
         email = findViewById(R.id.email);
         time = findViewById(R.id.opened_times);
         day = findViewById(R.id.opened_days);
+        foodMenu = findViewById(R.id.food_menu);
 
         recyclerView = findViewById(R.id.my_posts_recyclerview);
         int topPadding = getResources().getDimensionPixelSize(R.dimen.topPadding);
@@ -83,6 +85,14 @@ public class ProfileActivityView extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         document_reference = db.collection("RestaurantDetails").document(ID);
 
+        foodMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent foodMenu = new Intent(ProfileActivityView.this,MenuActivityView.class);
+                foodMenu.putExtra(EXTRA_ID_Restaurant, ID);
+                startActivity(foodMenu);
+            }
+        });
 
         close.setOnClickListener(new View.OnClickListener() {
             @Override

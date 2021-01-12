@@ -19,21 +19,30 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.foody.Models.Comment;
+import com.example.foody.Models.CommentAdapter;
 import com.example.foody.R;
+import com.example.foody.Tabs.FragmentFeed;
 import com.example.foody.Tabs.FragmentOffers;
+import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
@@ -44,11 +53,13 @@ public class DetailsActivityOffer extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView toolbarTitle;
     private AppBarLayout appBarLayout;
-    private ImageView like, back, edit, delete, send;
-    private EditText comment;
-    private TextView name, restaurant, details, like_count, views_count, comments_count;
+    private ImageView back, edit, delete, like, send;
+    private EditText et_comment;
+    private TextView name, restaurant, details, like_count, views_count, comments_count, tv_comment;
     private String Details;
     private String ID, userID;
+
+    private RecyclerView recyclerView;
 
     Dialog editPost;
 
@@ -57,11 +68,14 @@ public class DetailsActivityOffer extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private DocumentReference document_reference, document_ref, doc_ref;
 
+    private CommentAdapter adapter;
+
+    public static final String EXTRA_ID = "com.example.foody.EXTRA_ID";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-
         toolbar = findViewById(R.id.toolbar);
         toolbarTitle = findViewById(R.id.toolbar_title);
         appBarLayout = findViewById(R.id.appBarLayout);
@@ -72,7 +86,8 @@ public class DetailsActivityOffer extends AppCompatActivity {
         restaurant = findViewById(R.id.tv_restaurant);
         details = findViewById(R.id.tv_details);
 
-        comment = findViewById(R.id.comment);
+        et_comment = findViewById(R.id.comment);
+        tv_comment = findViewById(R.id.tv_comment);
         send = findViewById(R.id.send);
 
         like = findViewById(R.id.like);
@@ -82,20 +97,25 @@ public class DetailsActivityOffer extends AppCompatActivity {
 
         editPost = new Dialog(this);
 
+        recyclerView = findViewById(R.id.comment_recyclerview);
+
         final Intent intent = getIntent();
+
+        toolbarTitle.setText("Details");
 
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getUid();
 
-        ID = intent.getStringExtra(FragmentOffers.EXTRA_ID);
+        ID = intent.getStringExtra(FragmentFeed.EXTRA_ID);
 
         db = FirebaseFirestore.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        document_ref = db.collection("Comments").document();
         document_reference = db.collection("Offer").document(ID);
-        doc_ref = db.collection("UserDetails").document(userID);
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        document_ref = db.collection("UserDetails").document(userID);
+        doc_ref = db.collection("Comments").document();
 
         loadData();
+        loadComments();
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,17 +204,6 @@ public class DetailsActivityOffer extends AppCompatActivity {
             }
         });
 
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
-                    toolbarTitle.setVisibility(View.VISIBLE);
-                } else if (verticalOffset == 0) {
-                    toolbarTitle.setVisibility(View.GONE);
-                }
-            }
-        });
-
     }
 
     private void loadData() {
@@ -220,8 +229,6 @@ public class DetailsActivityOffer extends AppCompatActivity {
                     name.setText(Name);
                     restaurant.setText("@" + Restaurant);
                     details.setText(Details);
-
-                    toolbarTitle.setText("@" + Restaurant);
 
                 } else {
 
@@ -352,28 +359,28 @@ public class DetailsActivityOffer extends AppCompatActivity {
         hideKeyboard(DetailsActivityOffer.this);
 
         final String id = document_ref.getId();
-        final String Comment = comment.getText().toString().trim();
+        final String Comment = et_comment.getText().toString().trim();
 
-        doc_ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        document_ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
 
                 if (documentSnapshot.exists()) {
 
-                    String name = documentSnapshot.getString("name");
+                    String Name = documentSnapshot.getString("name");
 
                     Map<String, Object> userMap = new HashMap<>();
 
-                    userMap.put("name", name);
+                    userMap.put("name", Name);
                     userMap.put("comment", Comment);
                     userMap.put("user_id", userID);
                     userMap.put("post_id", ID);
                     userMap.put("id", id);
                     userMap.put("timestamp", FieldValue.serverTimestamp());
-                    document_ref.set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    doc_ref.set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            comment.setText("");
+                            et_comment.setText("");
                             Toast.makeText(DetailsActivityOffer.this, "Adding..", Toast.LENGTH_LONG).show();
 
                             firebaseFirestore.collection("Feed").document(ID).collection("Comments").document().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -385,7 +392,6 @@ public class DetailsActivityOffer extends AppCompatActivity {
 
                                     firebaseFirestore.collection("Feed").document(ID).collection("Comments").document().set(comments);
 
-
                                 }
                             });
 
@@ -396,9 +402,6 @@ public class DetailsActivityOffer extends AppCompatActivity {
                             Toast.makeText(DetailsActivityOffer.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
-
-                } else {
-
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -407,6 +410,32 @@ public class DetailsActivityOffer extends AppCompatActivity {
                 Toast.makeText(DetailsActivityOffer.this, "Something wrong!", Toast.LENGTH_SHORT).show();
             }
         });
+        Intent restartActivity = new Intent(getApplication(), DetailsActivity.class);
+        restartActivity.putExtra(EXTRA_ID, ID);
+        startActivity(restartActivity);
+        finish();
+    }
+
+    private void loadComments() {
+        CollectionReference comments = db.collection("Comments");
+
+        Query query = comments.whereEqualTo("post_id", ID).orderBy("timestamp", Query.Direction.DESCENDING);
+
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setInitialLoadSizeHint(10)
+                .setPageSize(15)
+                .build();
+
+        FirestorePagingOptions<Comment> options = new FirestorePagingOptions.Builder<Comment>()
+                .setQuery(query, config, Comment.class)
+                .build();
+
+        adapter = new CommentAdapter(options);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setAdapter(adapter);
+        adapter.startListening();
+
     }
 
     public static void hideKeyboard(Activity activity) {
@@ -416,5 +445,17 @@ public class DetailsActivityOffer extends AppCompatActivity {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 }

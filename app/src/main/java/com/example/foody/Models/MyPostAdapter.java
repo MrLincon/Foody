@@ -33,7 +33,6 @@ public class MyPostAdapter extends FirestorePagingAdapter<MyPosts, MyPostAdapter
 
     private OnItemClickListener listener;
     private Context mContext;
-    SwipeRefreshLayout mswipeRefreshLayout;
 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
@@ -136,34 +135,6 @@ public class MyPostAdapter extends FirestorePagingAdapter<MyPosts, MyPostAdapter
                 }
             }
         });
-    }
-
-    @Override
-    protected void onLoadingStateChanged(@NonNull LoadingState state) {
-        super.onLoadingStateChanged(state);
-        switch (state) {
-
-            case LOADING_INITIAL:
-//                mswipeRefreshLayout.setRefreshing(true);
-                Log.d("Paging Log (Profile)", "Loading Initial data");
-                break;
-            case LOADING_MORE:
-//                mswipeRefreshLayout.setRefreshing(true);
-                Log.d("Paging Log (Profile)", "Loading next page");
-                break;
-            case FINISHED:
-//                mswipeRefreshLayout.setRefreshing(false);
-                Log.d("Paging Log (Profile)", "All data loaded");
-                break;
-            case LOADED:
-//                mswipeRefreshLayout.setRefreshing(false);
-                Log.d("Paging Log (Profile)", "Total data loaded "+getItemCount());
-                break;
-            case ERROR:
-//                mswipeRefreshLayout.setRefreshing(false);
-                Log.d("Paging Log (Profile)", "Error loading data");
-                break;
-        }
     }
 
     @NonNull

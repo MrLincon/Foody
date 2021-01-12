@@ -57,15 +57,13 @@ public class DetailsActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView toolbarTitle;
     private AppBarLayout appBarLayout;
-    private ImageView back, edit, delete, like, send, comment;
+    private ImageView back, edit, delete, like, send;
     private EditText et_comment;
-    private TextView name, restaurant, details, like_count, views_count, comments_count;
+    private TextView name, restaurant, details, like_count, views_count, comments_count, tv_comment;
     private String Details;
     private String ID, userID;
 
     private RecyclerView recyclerView;
-
-    private BottomSheetBehavior mBottomSheetBehavior;
 
     Dialog editPost;
 
@@ -81,16 +79,12 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details2);
-
-//        View bottomSheet = findViewById(R.id.bottom_sheet);
-//        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        setContentView(R.layout.activity_details);
 
         toolbar = findViewById(R.id.toolbar);
         toolbarTitle = findViewById(R.id.toolbar_title);
         appBarLayout = findViewById(R.id.appBarLayout);
         back = findViewById(R.id.back);
-//        comment = findViewById(R.id.comment);
         edit = findViewById(R.id.edit);
         delete = findViewById(R.id.delete);
         name = findViewById(R.id.tv_name);
@@ -98,6 +92,7 @@ public class DetailsActivity extends AppCompatActivity {
         details = findViewById(R.id.tv_details);
 
         et_comment = findViewById(R.id.comment);
+        tv_comment = findViewById(R.id.tv_comment);
         send = findViewById(R.id.send);
 
         like = findViewById(R.id.like);
@@ -120,9 +115,9 @@ public class DetailsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        document_ref = db.collection("Comments").document();
         document_reference = db.collection("Feed").document(ID);
-        doc_ref = db.collection("UserDetails").document(userID);
+        document_ref = db.collection("UserDetails").document(userID);
+        doc_ref = db.collection("Comments").document();
 
         loadData();
         loadComments();
@@ -141,14 +136,6 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
-//        comment.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent1 = new Intent(getApplicationContext(),CommentActivity.class);
-//                intent1.putExtra(EXTRA_ID, ID);
-//                startActivity(intent1);
-//            }
-//        });
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,28 +208,6 @@ public class DetailsActivity extends AppCompatActivity {
                 builder.show();
             }
         });
-
-
-
-//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//                switch (newState) {
-//                    case BottomSheetBehavior.STATE_EXPANDED:
-//                        loadComments();
-//                        adapter.startListening();
-//                        break;
-//                    case BottomSheetBehavior.STATE_COLLAPSED:
-//                        adapter.startListening();
-//                        break;
-//                }
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//            }
-//        });
-
     }
 
     private void loadData() {
@@ -403,23 +368,23 @@ public class DetailsActivity extends AppCompatActivity {
         final String id = document_ref.getId();
         final String Comment = et_comment.getText().toString().trim();
 
-        doc_ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        document_ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
 
                 if (documentSnapshot.exists()) {
 
-                    String name = documentSnapshot.getString("name");
+                    String Name = documentSnapshot.getString("name");
 
                     Map<String, Object> userMap = new HashMap<>();
 
-                    userMap.put("name", name);
+                    userMap.put("name", Name);
                     userMap.put("comment", Comment);
                     userMap.put("user_id", userID);
                     userMap.put("post_id", ID);
                     userMap.put("id", id);
                     userMap.put("timestamp", FieldValue.serverTimestamp());
-                    document_ref.set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    doc_ref.set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             et_comment.setText("");
@@ -434,7 +399,6 @@ public class DetailsActivity extends AppCompatActivity {
 
                                     firebaseFirestore.collection("Feed").document(ID).collection("Comments").document().set(comments);
 
-
                                 }
                             });
 
@@ -445,9 +409,6 @@ public class DetailsActivity extends AppCompatActivity {
                             Toast.makeText(DetailsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
-
-                } else {
-
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -456,17 +417,20 @@ public class DetailsActivity extends AppCompatActivity {
                 Toast.makeText(DetailsActivity.this, "Something wrong!", Toast.LENGTH_SHORT).show();
             }
         });
+        Intent restartActivity = new Intent(getApplication(), DetailsActivity.class);
+        restartActivity.putExtra(EXTRA_ID, ID);
+        startActivity(restartActivity);
+        finish();
     }
 
     private void loadComments() {
         CollectionReference comments = db.collection("Comments");
 
-        Query query = comments.whereEqualTo("post_id", ID);
-        Toast.makeText(this, ID, Toast.LENGTH_SHORT).show();
+        Query query = comments.whereEqualTo("post_id", ID).orderBy("timestamp", Query.Direction.DESCENDING);
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setInitialLoadSizeHint(10)
-                .setPageSize(5)
+                .setPageSize(15)
                 .build();
 
         FirestorePagingOptions<Comment> options = new FirestorePagingOptions.Builder<Comment>()
@@ -478,6 +442,7 @@ public class DetailsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(adapter);
         adapter.startListening();
+
     }
 
     public static void hideKeyboard(Activity activity) {
