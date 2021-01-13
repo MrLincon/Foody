@@ -7,8 +7,9 @@ import java.util.List;
 
 public class Feed {
 
-    private String name,restaurant,details,id, used_id;
-    private @ServerTimestamp Date timestamp;
+    private String name, restaurant, details, id, used_id, postImageUrl, userImageUrl;
+    private @ServerTimestamp
+    Date timestamp;
 
     public Feed() {
     }
@@ -51,6 +52,22 @@ public class Feed {
 
     public void setUsed_id(String used_id) {
         this.used_id = used_id;
+    }
+
+    public String getPostImageUrl() {
+        return postImageUrl;
+    }
+
+    public void setPostImageUrl(String postImageUrl) {
+        this.postImageUrl = postImageUrl;
+    }
+
+    public String getUserImageUrl() {
+        return userImageUrl;
+    }
+
+    public void setUserImageUrl(String userImageUrl) {
+        this.userImageUrl = userImageUrl;
     }
 
     public Date getTimestamp() {

@@ -6,8 +6,9 @@ import java.util.Date;
 
 public class MyPosts {
 
-    private String name,restaurant,details,id,user_id;
-    private @ServerTimestamp Date timestamp;
+    private String name, restaurant, details, id, user_id, postImageUrl, userImageUrl;
+    private @ServerTimestamp
+    Date timestamp;
 
     public MyPosts() {
     }
@@ -50,6 +51,22 @@ public class MyPosts {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    public String getPostImageUrl() {
+        return postImageUrl;
+    }
+
+    public void setPostImageUrl(String postImageUrl) {
+        this.postImageUrl = postImageUrl;
+    }
+
+    public String getUserImageUrl() {
+        return userImageUrl;
+    }
+
+    public void setUserImageUrl(String userImageUrl) {
+        this.userImageUrl = userImageUrl;
     }
 
     public Date getTimestamp() {

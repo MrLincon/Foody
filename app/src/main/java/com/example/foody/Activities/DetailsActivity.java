@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.foody.Models.Comment;
 import com.example.foody.Models.CommentAdapter;
 import com.example.foody.Models.FeedRecyclerDecoration;
@@ -57,7 +58,7 @@ public class DetailsActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView toolbarTitle;
     private AppBarLayout appBarLayout;
-    private ImageView back, edit, delete, like, send;
+    private ImageView back, edit, delete, like, send, post_image, user_profile, comment_user_image;
     private EditText et_comment;
     private TextView name, restaurant, details, like_count, views_count, comments_count, tv_comment;
     private String Details;
@@ -94,6 +95,9 @@ public class DetailsActivity extends AppCompatActivity {
         et_comment = findViewById(R.id.comment);
         tv_comment = findViewById(R.id.tv_comment);
         send = findViewById(R.id.send);
+        post_image = findViewById(R.id.post_image);
+        user_profile = findViewById(R.id.profile);
+        comment_user_image = findViewById(R.id.user_img);
 
         like = findViewById(R.id.like);
         like_count = findViewById(R.id.like_count);
@@ -221,6 +225,8 @@ public class DetailsActivity extends AppCompatActivity {
                     String Restaurant = documentSnapshot.getString("restaurant");
                     Details = documentSnapshot.getString("details");
                     String User_ID = documentSnapshot.getString("user_id");
+                    String PostImageUrl = documentSnapshot.getString("postImageUrl");
+                    String UserImageUrl = documentSnapshot.getString("userImageUrl");
 
                     if (User_ID.equals(userID)) {
                         delete.setVisibility(View.VISIBLE);
@@ -233,8 +239,8 @@ public class DetailsActivity extends AppCompatActivity {
                     name.setText(Name);
                     restaurant.setText("@" + Restaurant);
                     details.setText(Details);
-//
-//                    toolbarTitle.setText("@" + Restaurant);
+                    Glide.with(getApplicationContext()).load(PostImageUrl).into(post_image);
+                    Glide.with(getApplicationContext()).load(UserImageUrl).into(user_profile);
 
                 } else {
 
@@ -247,6 +253,27 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
+
+        document_ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                if (documentSnapshot.exists()) {
+
+                    String UserImageUrl = documentSnapshot.getString("userImageUrl");
+
+                    Glide.with(getApplicationContext()).load(UserImageUrl).into(comment_user_image);
+
+                } else {
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(DetailsActivity.this, "Something wrong!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         viewFeatures();
         likeFeatures();
@@ -375,11 +402,13 @@ public class DetailsActivity extends AppCompatActivity {
                 if (documentSnapshot.exists()) {
 
                     String Name = documentSnapshot.getString("name");
+                    String UserImageUrl = documentSnapshot.getString("userImageUrl");
 
                     Map<String, Object> userMap = new HashMap<>();
 
                     userMap.put("name", Name);
                     userMap.put("comment", Comment);
+                    userMap.put("userImageUrl", UserImageUrl);
                     userMap.put("user_id", userID);
                     userMap.put("post_id", ID);
                     userMap.put("id", id);

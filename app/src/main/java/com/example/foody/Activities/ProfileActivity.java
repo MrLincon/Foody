@@ -1,6 +1,7 @@
 package com.example.foody.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +16,7 @@ import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.foody.Models.FavResRecyclerDecoration;
 import com.example.foody.Models.FavouriteRestaurantAdapter;
 import com.example.foody.Models.FavouriteRestaurants;
@@ -36,14 +38,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
 
 public class ProfileActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private AppBarLayout appBarLayout;
-    private TextView toolbarTitle;
-    private ImageView close;
+    private TextView toolbarTitle, save;
+    private ImageView close, profile;
     private CardView editProfile;
     private RecyclerView recyclerView, fav_recyclerView;
 
@@ -61,6 +67,12 @@ public class ProfileActivity extends AppCompatActivity {
     private MyPostAdapter adapter;
     private FavouriteRestaurantAdapter adapter2;
 
+    private Uri mImageUri;
+    private static final int PICK_IMAGE_REQUEST = 1;
+
+    private StorageReference mStorageRef;
+    private StorageTask mUploadTask;
+
     public static final String EXTRA_ID_POST = "com.example.foody.EXTRA_ID";
     public static final String EXTRA_ID = "com.example.foody.EXTRA_ID";
 
@@ -72,8 +84,10 @@ public class ProfileActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.appBarLayout);
         toolbarTitle = findViewById(R.id.toolbar_title);
+        save = findViewById(R.id.save);
         close = findViewById(R.id.close);
         editProfile =  findViewById(R.id.edit_profile);
+        profile =  findViewById(R.id.profile);
 
         favourites_count = findViewById(R.id.favourites_count);
         posts_count = findViewById(R.id.posts_count);
@@ -104,7 +118,7 @@ public class ProfileActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         document_reference = db.collection("UserDetails").document(userID);
-
+        mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
 
         close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +133,13 @@ public class ProfileActivity extends AppCompatActivity {
            public void onClick(View v) {
                Intent edit_profile = new Intent(ProfileActivity.this,EditProfileActivity.class);
                startActivity(edit_profile);
-               finish();
+           }
+       });
+
+       save.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               uploadFile();
            }
        });
 
@@ -138,6 +158,7 @@ public class ProfileActivity extends AppCompatActivity {
                     String Birthday = documentSnapshot.getString("birthday");
                     String Joined = documentSnapshot.getString("joined");
                     String Gender = documentSnapshot.getString("gender");
+                    String UserImageUrl = documentSnapshot.getString("userImageUrl");
 
                     toolbarTitle.setText(Name);
                     name.setText(Name);
@@ -145,6 +166,7 @@ public class ProfileActivity extends AppCompatActivity {
                     location.setText(Division+", "+Country);
                     birthday.setText(Birthday);
                     joined.setText(Joined);
+                    Glide.with(getApplicationContext()).load(UserImageUrl).into(profile);
 
                 } else {
                     Toast.makeText(ProfileActivity.this, "Something wrong!", Toast.LENGTH_LONG).show();
@@ -172,6 +194,83 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               openFileChooser();
+            }
+        });
+
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        save.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+            Glide.with(this).load(mImageUri).into(profile);
+        }
+    }
+
+    private void uploadFile() {
+        save.setVisibility(View.INVISIBLE);
+        if (mImageUri != null) {
+            final String currentTimeMillis = String.valueOf(System.currentTimeMillis());
+            final StorageReference fileReference = mStorageRef.child(currentTimeMillis);
+            mUploadTask = fileReference.putFile(mImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            Toast.makeText(ProfileActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
+
+                            StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+
+                            mStorageRef.child(currentTimeMillis).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+
+                                    String img_url = String.valueOf(uri);
+
+                                    document_reference.update("userImageUrl", img_url).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(ProfileActivity.this, " e.getMessage()", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loadMyPosts() {

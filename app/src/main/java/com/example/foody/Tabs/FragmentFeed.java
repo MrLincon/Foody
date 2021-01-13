@@ -54,11 +54,7 @@ public class FragmentFeed extends Fragment {
 
     private FeedAdapter adapter;
 
-
     public static final String EXTRA_ID = "com.example.foody.EXTRA_ID";
-//    public static final String EXTRA_NAME = "com.example.foody.EXTRA_NAME";
-//    public static final String EXTRA_RESTAURANT = "com.example.foody.EXTRA_RESTAURANT";
-//    public static final String EXTRA_DETAILS = "com.example.foody.EXTRA_DETAILS";
 
     @Nullable
     @Override
@@ -135,6 +131,7 @@ public class FragmentFeed extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        adapter.refresh();
         adapter.startListening();
     }
 
