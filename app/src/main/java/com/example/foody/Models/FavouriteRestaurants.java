@@ -2,7 +2,7 @@ package com.example.foody.Models;
 
 public class FavouriteRestaurants {
 
-    private String name, location, time, day, id;
+    private String name, location, time, day, id, userImageUrl;
 
     public FavouriteRestaurants() {
     }
@@ -37,6 +37,14 @@ public class FavouriteRestaurants {
 
     public void setDay(String day) {
         this.day = day;
+    }
+
+    public String getUserImageUrl() {
+        return userImageUrl;
+    }
+
+    public void setUserImageUrl(String userImageUrl) {
+        this.userImageUrl = userImageUrl;
     }
 
     public String getId() {

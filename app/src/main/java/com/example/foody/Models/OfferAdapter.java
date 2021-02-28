@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,61 +25,55 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RestaurantAdapter extends FirestorePagingAdapter<Restaurant, RestaurantAdapter.RestaurantHolder> {
+public class OfferAdapter extends FirestorePagingAdapter<Offer, OfferAdapter.OfferHolder> {
 
     private OnItemClickListener listener;
-    private Context mContext;
     private Context context;
+    private Context mContext;
     SwipeRefreshLayout mswipeRefreshLayout;
 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
 
-    public RestaurantAdapter(@NonNull FirestorePagingOptions<Restaurant> options, SwipeRefreshLayout swipeRefreshLayout) {
+    public OfferAdapter(@NonNull FirestorePagingOptions<Offer> options, SwipeRefreshLayout swipeRefreshLayout) {
         super(options);
         this.mswipeRefreshLayout = swipeRefreshLayout;
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull final RestaurantHolder holder, int position, @NonNull final Restaurant model) {
+    protected void onBindViewHolder(@NonNull final OfferHolder holder, int position, @NonNull Offer model) {
         final String post_id = getItem(position).getId();
         final String user_id = firebaseAuth.getCurrentUser().getUid();
 
         holder.Name.setText(model.getName());
-        holder.Location.setText(model.getLocation());
-        holder.Day.setText(model.getDay());
-        holder.Time.setText(model.getTime());
+        holder.Restaurant.setText("@"+model.getRestaurant());
+        Glide.with(mContext).load(model.getPostImageUrl()).into(holder.PostImage);
         Glide.with(mContext).load(model.getUserImageUrl()).into(holder.UserImage);
 
-
-        //Favourite Features
-        holder.Favourite.setOnClickListener(new View.OnClickListener() {
+        //Like Features
+        holder.Like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("user_id", user_id);
-                firebaseFirestore.collection("UserDetails").document(user_id).collection("Favourites").document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                Log.d("post_id", post_id);
+                firebaseFirestore.collection("Offer").document(post_id).collection("Likes").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
                         if(!task.getResult().exists()){
 
-                            Map<String, Object> favourites = new HashMap<>();
-                            favourites.put("name", model.getName());
-                            favourites.put("location", model.getLocation());
-                            favourites.put("day", model.getDay());
-                            favourites.put("time", model.getTime());
-                            favourites.put("userImageUrl", model.getUserImageUrl());
-                            favourites.put("timestamp", FieldValue.serverTimestamp());
+                            Map<String, Object> likes = new HashMap<>();
+                            likes.put("timestamp", FieldValue.serverTimestamp());
 
-                            firebaseFirestore.collection("UserDetails").document(user_id).collection("Favourites").document(post_id).set(favourites);
+                            firebaseFirestore.collection("Offer/" + post_id + "/Likes").document(user_id).set(likes);
 
                         } else {
 
-                            firebaseFirestore.collection("UserDetails").document(user_id).collection("Favourites").document(post_id).delete();
+                            firebaseFirestore.collection("Offer").document(post_id).collection("Likes").document(user_id).delete();
 
                         }
                     }
@@ -89,21 +82,64 @@ public class RestaurantAdapter extends FirestorePagingAdapter<Restaurant, Restau
             }
         });
 
-       // Update favourite icon
-        firebaseFirestore.collection("UserDetails").document(user_id).collection("Favourites").document(post_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        //Update Like icon
+        firebaseFirestore.collection("Offer").document(post_id).collection("Likes").document(user_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
 
                 if(documentSnapshot.exists()){
 
-                    holder.Favourite.setImageResource(R.drawable.ic_heart_selected);
+                    holder.Like.setImageResource(R.drawable.ic_heart_selected);
 
                 } else {
 
-                    holder.Favourite.setImageResource(R.drawable.ic_heart);
+                    holder.Like.setImageResource(R.drawable.ic_heart);
 
                 }
 
+            }
+        });
+
+        //Get Likes Count
+        firebaseFirestore.collection("Offer").document(post_id).collection("Likes").addSnapshotListener( new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+
+                if(!documentSnapshots.isEmpty()){
+
+                    String count = String.valueOf(documentSnapshots.size());
+                    holder.Like_count.setText(count);
+                } else {
+                    holder.Like_count.setText("0");
+                }
+            }
+        });
+
+        //Get views Count
+        firebaseFirestore.collection("Offer").document(post_id).collection("Views").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+
+                if (!documentSnapshots.isEmpty()) {
+                    String count = String.valueOf(documentSnapshots.size());
+                    holder.Views_count.setText(count);
+                } else {
+                    holder.Views_count.setText("0");
+                }
+            }
+        });
+
+        //Get comments Count
+        firebaseFirestore.collection("Offer").document(post_id).collection("Comments").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+
+                if (!documentSnapshots.isEmpty()) {
+                    String count = String.valueOf(documentSnapshots.size());
+                    holder.Comment_count.setText(count);
+                } else {
+                    holder.Comment_count.setText("0");
+                }
             }
         });
     }
@@ -138,27 +174,30 @@ public class RestaurantAdapter extends FirestorePagingAdapter<Restaurant, Restau
 
     @NonNull
     @Override
-    public RestaurantHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.restaurant_layout,
+    public OfferHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_layout,
                 parent, false);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
 
-        return new RestaurantHolder(view);
+        return new OfferHolder(view);
     }
 
-    class RestaurantHolder extends RecyclerView.ViewHolder {
-        TextView Name, Location, Day, Time;
-        ImageView Favourite, UserImage;
-        public RestaurantHolder(View itemView) {
+    class OfferHolder extends RecyclerView.ViewHolder {
+        TextView Name,Restaurant, Like_count,Comment_count, Views_count;
+        ImageView Like,Comment, PostImage, UserImage;
+        public OfferHolder(View itemView) {
             super(itemView);
             Name = itemView.findViewById(R.id.name);
-            Location = itemView.findViewById(R.id.location);
+            Restaurant = itemView.findViewById(R.id.restaurant);
+            PostImage = itemView.findViewById(R.id.post_image);
             UserImage = itemView.findViewById(R.id.profile);
-            Day = itemView.findViewById(R.id.day_opened);
-            Time = itemView.findViewById(R.id.time_opened);
-            Favourite = itemView.findViewById(R.id.favourite);
+            Like = itemView.findViewById(R.id.like);
+            Comment = itemView.findViewById(R.id.comment);
+            Like_count = itemView.findViewById(R.id.like_count);
+            Comment_count = itemView.findViewById(R.id.comments_count);
+            Views_count = itemView.findViewById(R.id.views_count);
 
             mContext = itemView.getContext();
 

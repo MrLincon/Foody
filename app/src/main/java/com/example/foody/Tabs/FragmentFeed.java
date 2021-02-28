@@ -131,7 +131,6 @@ public class FragmentFeed extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        adapter.refresh();
         adapter.startListening();
     }
 

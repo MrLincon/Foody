@@ -28,12 +28,4 @@
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"/>
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginRight="16dp"
-        android:layout_gravity="right"
-        android:src="@drawable/img_user"></de.hdodenhof.circleimageview.CircleImageView>
-
 </androidx.appcompat.widget.Toolbar>

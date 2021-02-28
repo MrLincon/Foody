@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.foody.R;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
@@ -32,6 +33,8 @@ public class FavouriteRestaurantAdapter extends FirestorePagingAdapter<Favourite
 
     private OnItemClickListener listener;
     private Context mContext;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth firebaseAuth;
 
     public FavouriteRestaurantAdapter(@NonNull FirestorePagingOptions<FavouriteRestaurants> options) {
         super(options);
@@ -39,9 +42,13 @@ public class FavouriteRestaurantAdapter extends FirestorePagingAdapter<Favourite
 
     @Override
     protected void onBindViewHolder(@NonNull final FavouriteRestaurantHolder holder, int position, @NonNull final FavouriteRestaurants model) {
+        final String post_id = getItem(position).getId();
+        final String user_id = firebaseAuth.getCurrentUser().getUid();
+
         holder.Name.setText(model.getName());
         holder.Day.setText(model.getDay());
         holder.Time.setText(model.getTime());
+        Glide.with(mContext).load(model.getUserImageUrl()).into(holder.ProfileImage);
     }
 
     @Override
@@ -73,16 +80,22 @@ public class FavouriteRestaurantAdapter extends FirestorePagingAdapter<Favourite
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fav_restaurant_layout,
                 parent, false);
 
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+
+
         return new FavouriteRestaurantHolder(view);
     }
 
     class FavouriteRestaurantHolder extends RecyclerView.ViewHolder {
         TextView Name, Day, Time;
+        ImageView ProfileImage;
         public FavouriteRestaurantHolder(View itemView) {
             super(itemView);
             Name = itemView.findViewById(R.id.name);
             Day = itemView.findViewById(R.id.day_opened);
             Time = itemView.findViewById(R.id.time_opened);
+            ProfileImage = itemView.findViewById(R.id.profile_img);
 
             mContext = itemView.getContext();
 

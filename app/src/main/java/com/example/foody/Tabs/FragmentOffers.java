@@ -18,6 +18,8 @@ import com.example.foody.Activities.DetailsActivityOffer;
 import com.example.foody.Models.Feed;
 import com.example.foody.Models.FeedAdapter;
 import com.example.foody.Models.FeedRecyclerDecoration;
+import com.example.foody.Models.Offer;
+import com.example.foody.Models.OfferAdapter;
 import com.example.foody.R;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -38,7 +40,7 @@ public class FragmentOffers extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference feed = db.collection("Offer");
 
-    private FeedAdapter adapter;
+    private OfferAdapter adapter;
 
 
     public static final String EXTRA_ID = "com.example.foody.EXTRA_ID";
@@ -70,11 +72,11 @@ public class FragmentOffers extends Fragment {
                 .setPageSize(5)
                 .build();
 
-        FirestorePagingOptions<Feed> options = new FirestorePagingOptions.Builder<Feed>()
-                .setQuery(query, config, Feed.class)
+        FirestorePagingOptions<Offer> options = new FirestorePagingOptions.Builder<Offer>()
+                .setQuery(query, config, Offer.class)
                 .build();
 
-        adapter = new FeedAdapter(options,swipeRefreshLayout);
+        adapter = new OfferAdapter(options,swipeRefreshLayout);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
@@ -87,26 +89,19 @@ public class FragmentOffers extends Fragment {
             }
         });
 
-        adapter.setOnItemClickListener(new FeedAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new OfferAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot) {
-                Feed feed = documentSnapshot.toObject(Feed.class);
+                Offer offer = documentSnapshot.toObject(Offer.class);
                 String id = documentSnapshot.getId();
 
                 Intent intent = new Intent(getActivity(), DetailsActivityOffer.class);
-
-                String name = feed.getName();
-//                String restaurant = feed.getRestaurant();
-//                String details = feed.getDetails();
-
+                String name = offer.getName();
                 intent.putExtra(EXTRA_ID, id);
-//                intent.putExtra(EXTRA_NAME, name);
-//                intent.putExtra(EXTRA_RESTAURANT, name);
-//                intent.putExtra(EXTRA_DETAILS, details);
-
                 startActivity(intent);
             }
         });
+
     }
 
     @Override

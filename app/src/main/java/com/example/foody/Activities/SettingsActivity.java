@@ -15,6 +15,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.foody.Authentication.LoginActivity;
 import com.example.foody.Models.ThemeSettings;
 import com.example.foody.R;
@@ -30,7 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private TextView toolbarTitle;
-    private ImageView back;
+    private ImageView back, profile_img;
 
     private TextView name,division;
 
@@ -71,6 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
         darkMode = findViewById(R.id.dark_mode);
 
         profile = findViewById(R.id.profile);
+        profile_img = findViewById(R.id.profile_img);
         name = findViewById(R.id.tv_name);
         division = findViewById(R.id.tv_division);
 
@@ -148,9 +150,11 @@ public class SettingsActivity extends AppCompatActivity {
 
                     String Name = documentSnapshot.getString("name");
                     String Division = documentSnapshot.getString("division");
+                    String Image = documentSnapshot.getString("userImageUrl");
 
                     name.setText(Name);
                     division.setText(Division);
+                    Glide.with(getApplicationContext()).load(Image).into(profile_img);
 
                 } else {
                     Toast.makeText(SettingsActivity.this, "Something wrong!", Toast.LENGTH_LONG).show();

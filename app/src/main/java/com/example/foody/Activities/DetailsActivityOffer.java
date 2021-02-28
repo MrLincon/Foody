@@ -23,6 +23,7 @@ import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.foody.Models.Comment;
 import com.example.foody.Models.CommentAdapter;
 import com.example.foody.R;
@@ -53,7 +54,7 @@ public class DetailsActivityOffer extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView toolbarTitle;
     private AppBarLayout appBarLayout;
-    private ImageView back, edit, delete, like, send;
+    private ImageView back, edit, delete, like, send, post_image, user_profile, comment_user_image;
     private EditText et_comment;
     private TextView name, restaurant, details, like_count, views_count, comments_count, tv_comment;
     private String Details;
@@ -89,7 +90,9 @@ public class DetailsActivityOffer extends AppCompatActivity {
         et_comment = findViewById(R.id.comment);
         tv_comment = findViewById(R.id.tv_comment);
         send = findViewById(R.id.send);
-
+        post_image = findViewById(R.id.post_image);
+        user_profile = findViewById(R.id.profile);
+        comment_user_image = findViewById(R.id.user_img);
         like = findViewById(R.id.like);
         like_count = findViewById(R.id.like_count);
         comments_count = findViewById(R.id.comments_count);
@@ -217,6 +220,8 @@ public class DetailsActivityOffer extends AppCompatActivity {
                     String Restaurant = documentSnapshot.getString("restaurant");
                     Details = documentSnapshot.getString("details");
                     String User_ID = documentSnapshot.getString("user_id");
+                    String PostImageUrl = documentSnapshot.getString("postImageUrl");
+                    String UserImageUrl = documentSnapshot.getString("userImageUrl");
 
                     if (User_ID.equals(userID)) {
                         delete.setVisibility(View.VISIBLE);
@@ -229,6 +234,29 @@ public class DetailsActivityOffer extends AppCompatActivity {
                     name.setText(Name);
                     restaurant.setText("@" + Restaurant);
                     details.setText(Details);
+                    Glide.with(getApplicationContext()).load(PostImageUrl).into(post_image);
+                    Glide.with(getApplicationContext()).load(UserImageUrl).into(user_profile);
+
+                } else {
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(DetailsActivityOffer.this, "Something wrong!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        document_ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                if (documentSnapshot.exists()) {
+
+                    String UserImageUrl = documentSnapshot.getString("userImageUrl");
+
+                    Glide.with(getApplicationContext()).load(UserImageUrl).into(comment_user_image);
 
                 } else {
 
@@ -251,20 +279,20 @@ public class DetailsActivityOffer extends AppCompatActivity {
     private void viewFeatures() {
         //View features
 
-        firebaseFirestore.collection("Feed").document(ID).collection("Views").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firebaseFirestore.collection("Offer").document(ID).collection("Views").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
                 Map<String, Object> views = new HashMap<>();
                 views.put("timestamp", FieldValue.serverTimestamp());
 
-                firebaseFirestore.collection("Feed").document(ID).collection("Views").document(userID).set(views);
+                firebaseFirestore.collection("Offer").document(ID).collection("Views").document(userID).set(views);
 
             }
         });
 
         //Get views Count
-        firebaseFirestore.collection("Feed").document(ID).collection("Views").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firebaseFirestore.collection("Offer").document(ID).collection("Views").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
@@ -283,7 +311,7 @@ public class DetailsActivityOffer extends AppCompatActivity {
         like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firebaseFirestore.collection("Feed").document(ID).collection("Likes").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                firebaseFirestore.collection("Offer").document(ID).collection("Likes").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
@@ -292,11 +320,11 @@ public class DetailsActivityOffer extends AppCompatActivity {
                             Map<String, Object> likes = new HashMap<>();
                             likes.put("timestamp", FieldValue.serverTimestamp());
 
-                            firebaseFirestore.collection("Feed").document(ID).collection("Likes").document(userID).set(likes);
+                            firebaseFirestore.collection("Offer").document(ID).collection("Likes").document(userID).set(likes);
 
                         } else {
 
-                            firebaseFirestore.collection("Feed").document(ID).collection("Likes").document(userID).delete();
+                            firebaseFirestore.collection("Offer").document(ID).collection("Likes").document(userID).delete();
 
                         }
 
@@ -307,7 +335,7 @@ public class DetailsActivityOffer extends AppCompatActivity {
         });
 
         //Update like icon
-        firebaseFirestore.collection("Feed").document(ID).collection("Likes").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        firebaseFirestore.collection("Offer").document(ID).collection("Likes").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
 
@@ -324,7 +352,7 @@ public class DetailsActivityOffer extends AppCompatActivity {
         });
 
         //Get like Count
-        firebaseFirestore.collection("Feed").document(ID).collection("Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firebaseFirestore.collection("Offer").document(ID).collection("Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
@@ -340,7 +368,7 @@ public class DetailsActivityOffer extends AppCompatActivity {
 
     private void commentFeatures() {
         //Get comments Count
-        firebaseFirestore.collection("Feed").document(ID).collection("Comments").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firebaseFirestore.collection("Offer").document(ID).collection("Comments").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
@@ -368,11 +396,13 @@ public class DetailsActivityOffer extends AppCompatActivity {
                 if (documentSnapshot.exists()) {
 
                     String Name = documentSnapshot.getString("name");
+                    String UserImageUrl = documentSnapshot.getString("userImageUrl");
 
                     Map<String, Object> userMap = new HashMap<>();
 
                     userMap.put("name", Name);
                     userMap.put("comment", Comment);
+                    userMap.put("userImageUrl", UserImageUrl);
                     userMap.put("user_id", userID);
                     userMap.put("post_id", ID);
                     userMap.put("id", id);
@@ -383,14 +413,14 @@ public class DetailsActivityOffer extends AppCompatActivity {
                             et_comment.setText("");
                             Toast.makeText(DetailsActivityOffer.this, "Adding..", Toast.LENGTH_LONG).show();
 
-                            firebaseFirestore.collection("Feed").document(ID).collection("Comments").document().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            firebaseFirestore.collection("Offer").document(ID).collection("Comments").document().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
                                     Map<String, Object> comments = new HashMap<>();
                                     comments.put("timestamp", FieldValue.serverTimestamp());
 
-                                    firebaseFirestore.collection("Feed").document(ID).collection("Comments").document().set(comments);
+                                    firebaseFirestore.collection("Offer").document(ID).collection("Comments").document().set(comments);
 
                                 }
                             });
@@ -410,7 +440,7 @@ public class DetailsActivityOffer extends AppCompatActivity {
                 Toast.makeText(DetailsActivityOffer.this, "Something wrong!", Toast.LENGTH_SHORT).show();
             }
         });
-        Intent restartActivity = new Intent(getApplication(), DetailsActivity.class);
+        Intent restartActivity = new Intent(getApplication(), DetailsActivityOffer.class);
         restartActivity.putExtra(EXTRA_ID, ID);
         startActivity(restartActivity);
         finish();
