@@ -2,7 +2,7 @@
 
 ## About
 
-"Foody" was my final year project (12th semester), including "Foody Restaurant". 
+"Foody" is my final year project (12th semester), including "Foody Restaurant". 
 It is simmilar to a social media platform where users can post photos of food they are having from various restaurants.
 Other users are able to interact with other users posts, liking their posts, commenting or sharing. Each post has view feature, 
 to know how many people have viewed the post.
